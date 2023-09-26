@@ -23,7 +23,9 @@ dependencies:
 - base >= 4.7 && < 5
 - hip
 - mtl
+- array
 - network
+- gloss
 
 
 ghc-options:
