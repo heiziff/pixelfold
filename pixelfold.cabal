@@ -36,6 +36,7 @@ library
   build-depends:
       array
     , base >=4.7 && <5
+    , cereal
     , gloss
     , hip
     , mtl
@@ -52,6 +53,7 @@ executable pixelfold-exe
   build-depends:
       array
     , base >=4.7 && <5
+    , cereal
     , gloss
     , hip
     , mtl
@@ -70,6 +72,7 @@ test-suite pixelfold-test
   build-depends:
       array
     , base >=4.7 && <5
+    , cereal
     , gloss
     , hip
     , mtl

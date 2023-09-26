@@ -24,6 +24,7 @@ dependencies:
 - hip
 - mtl
 - array
+- cereal
 - network
 - gloss
 
