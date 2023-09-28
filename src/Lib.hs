@@ -8,7 +8,7 @@ import Data.Array.Unboxed
 import Text.Printf (printf)
 import Data.Word (Word32)
 import Text.Read (readMaybe)
-import Data.IORef (IORef, readIORef, modifyIORef')
+import Data.IORef (IORef, modifyIORef')
 
 type Canvas = UArray (Int, Int) Word32
 
@@ -48,11 +48,11 @@ runCommand (Draw idx rgba) canvas_ref = do
 
 handleUpdate :: String -> IORef Canvas -> IO (IORef Canvas)
 handleUpdate s canvas_ref = do
-    putStrLn $ printf "Got String %s" s
+    --putStrLn $ printf "Got String %s" s
     let mC = parseCommand s
     case mC of
         Nothing -> do 
-            putStrLn "Invalid Command"
+            putStrLn "Invalid Command!"
             return canvas_ref
         Just cmd -> runCommand cmd canvas_ref
 

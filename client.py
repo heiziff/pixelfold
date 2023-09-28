@@ -20,6 +20,7 @@ def send_pixel(x,y):
     b = img_arr[x][y][2]
 
     message = b'Draw (%d,%d) 0x%02x%02x%02x%02x\n' % (x,y,r,g,b,255)
+    #print(f"Sending: {message}")
     s.send(message)
 
 if __name__ == '__main__':
@@ -27,7 +28,5 @@ if __name__ == '__main__':
         width, height = np.size(img_arr, 0), np.size(img_arr, 1)
         for x in range(width):
             for y in range(height):
-                print(f"{x}, {y}")
                 send_pixel(x,y)
-
 s.close()
