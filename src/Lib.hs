@@ -5,7 +5,6 @@ module Lib
     ) where
 
 import Data.Array.Unboxed
-import Control.Monad.State (State)
 import Text.Printf (printf)
 import Data.Word (Word32)
 import Text.Read (readMaybe)

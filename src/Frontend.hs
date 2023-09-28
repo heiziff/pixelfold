@@ -1,4 +1,11 @@
-module Frontend where
+module Frontend
+    (
+        canvasWidth,
+        canvasHeight,
+        startGUI
+    )
+
+where
 
 import Lib
 
@@ -6,20 +13,29 @@ import Data.IORef
 import Graphics.Gloss
 import Data.Array.Unboxed (elems)
 import Data.Serialize
+import Graphics.Gloss.Interface.IO.Display (displayIO, Controller (Controller))
+
+canvasWidth :: Int
+canvasWidth = 20
+
+canvasHeight :: Int
+canvasHeight = 20
 
 
 window :: Display
-window = InWindow "Pixelfold" (800, 800) (0,0)
+window = InWindow "Pixelfold" (900, 900) (0,0)
 
 background :: Color
 background = white
 
-drawing :: Picture
-drawing = circle 80
-
 startGUI :: IORef Canvas -> IO ()
 startGUI canvas_ref = do 
-    canvas <- readIORef canvas_ref
-    let bytestr = encode $ elems canvas
-    let pic = bitmapOfByteString 800 800 (BitmapFormat TopToBottom PxRGBA) bytestr False
-    display window background pic
+    displayIO window background imgUpdate (\(Controller s _) -> s)
+    where
+        imgUpdate :: IO Picture
+        imgUpdate = do
+            canvas <- readIORef canvas_ref
+            print canvas
+            let new_bytestr = encode $ elems canvas
+            return $ bitmapOfByteString canvasWidth canvasHeight (BitmapFormat TopToBottom PxRGBA) new_bytestr False
+
