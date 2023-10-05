@@ -18,10 +18,10 @@ import Data.Array.IO (getElems)
 -- Model consists of Reference to canvas and a cached image
 
 canvasWidth :: Int
-canvasWidth = 900
+canvasWidth = 800
 
 canvasHeight :: Int
-canvasHeight = 900
+canvasHeight = 800
 
 
 window :: Display
