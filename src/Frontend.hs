@@ -2,7 +2,7 @@ module Frontend
     (
         canvasWidth,
         canvasHeight,
-        startSimGUI
+        startGUI
     )
 
 where
@@ -11,11 +11,10 @@ import Lib
 
 import Data.IORef
 import Graphics.Gloss
-import Data.Array.Unboxed (elems)
+import Data.Array.Unboxed (elems, (//))
 import Data.Serialize
-import Graphics.Gloss.Interface.IO.Display (Controller (Controller))
-import Graphics.Gloss.Interface.IO.Animate (animateIO)
 import Graphics.Gloss.Interface.IO.Simulate (simulateIO)
+import Data.Word (Word32)
 
 
 -- Model consists of Reference to canvas and a cached image
@@ -33,24 +32,15 @@ window = InWindow "Pixelfold" (900, 900) (0,0)
 background :: Color
 background = white
 
-startGUI :: IORef Canvas -> IO ()
-startGUI canvas_ref = do 
-    animateIO window background (const imgUpdate) (\(Controller s _) -> s)
+startGUI :: IORef Canvas -> IORef [(Coord, Word32)] -> IO ()
+startGUI canvas_ref update_ref = do
+    simulateIO window background 5 (canvas_ref, update_ref, circle 80) getImage updateImage
     where
-        imgUpdate :: IO Picture
-        imgUpdate = do
-            canvas <- readIORef canvas_ref
-            let new_bytestr = encode $ elems canvas
-            return $ bitmapOfByteString canvasWidth canvasHeight (BitmapFormat TopToBottom PxRGBA) new_bytestr False
+        getImage :: (IORef Canvas, IORef [(Coord, Word32)], Picture) -> IO Picture
+        getImage (_, _, img) = return img
 
-startSimGUI :: IORef Canvas -> IO ()
-startSimGUI canvas_ref = do
-    simulateIO window background 5 (canvas_ref, circle 80) getImage updateImage
-    where
-        getImage :: (IORef Canvas, Picture) -> IO Picture
-        getImage (_, img) = return img
-
-        updateImage _ _ (ca_ref, _)= do
+        updateImage _ _ (ca_ref, up_ref, _)= do
             canvas <- readIORef ca_ref
-            let new_bytestr = encode $ elems canvas
-            return (ca_ref, bitmapOfByteString canvasWidth canvasHeight (BitmapFormat TopToBottom PxRGBA) new_bytestr False)
+            updates <- readIORef up_ref
+            let new_bytestr = encode . elems $ canvas // updates
+            return (ca_ref, up_ref, bitmapOfByteString canvasWidth canvasHeight (BitmapFormat TopToBottom PxRGBA) new_bytestr False)

@@ -1,18 +1,19 @@
 module Lib
     ( handleUpdate,
-      someFunc,
-      Canvas
+      Canvas,
+      Coord
     ) where
 
 import Data.Array.Unboxed
-import Text.Printf (printf)
 import Data.Word (Word32)
 import Text.Read (readMaybe)
 import Data.IORef (IORef, modifyIORef')
 
-type Canvas = UArray (Int, Int) Word32
+type Coord = (Int, Int)
 
-data Command = Draw (Int, Int) Word32 | Help
+type Canvas = UArray Coord Word32
+
+data Command = Draw Coord Word32 | Help
 
 parseCommand :: String -> Maybe Command
 parseCommand [] = Nothing
@@ -34,26 +35,22 @@ parseCommand s
 parseCommand _ = Nothing
 
 
-someFunc :: IO ()
-someFunc = putStrLn "someFunc"
-
-runCommand :: Command -> IORef Canvas -> IO (IORef Canvas)
-runCommand Help canvas = do
+runCommand :: Command -> IORef [(Coord, Word32)] -> IO ()
+runCommand Help _ = do
     putStrLn "TODO"
-    return canvas
-runCommand (Draw idx rgba) canvas_ref = do 
-    modifyIORef' canvas_ref (\c -> c // [(idx, rgba)])
-    return canvas_ref
+    return ()
+runCommand (Draw idx rgba) update_ref = do 
+    modifyIORef' update_ref (\updates -> (idx, rgba) : updates)
+    return ()
 
 
-handleUpdate :: String -> IORef Canvas -> IO (IORef Canvas)
-handleUpdate s canvas_ref = do
-    --putStrLn $ printf "Got String %s" s
+handleUpdate :: IORef [(Coord, Word32)] -> String -> IO ()
+handleUpdate update_ref s = do
     let mC = parseCommand s
     case mC of
         Nothing -> do 
             putStrLn "Invalid Command!"
-            return canvas_ref
-        Just cmd -> runCommand cmd canvas_ref
+            return ()
+        Just cmd -> runCommand cmd update_ref
 
 
