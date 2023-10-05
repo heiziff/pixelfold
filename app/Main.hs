@@ -5,17 +5,14 @@ import Net (runServer)
 import Lib (Coord)
 
 import Control.Concurrent (forkIO)
-import Data.Array.Unboxed
+import Data.Array.MArray
 import Data.Word (Word32)
-import Data.IORef (newIORef)
-
+import Data.Array.IO (IOUArray)
 
 
 main :: IO ()
 main = do 
-    let canvas = array ((0,0), (canvasWidth, canvasHeight)) [] :: UArray (Int, Int) Word32
-    canvas_ref <- newIORef canvas
-    update_ref <- newIORef ([] :: [(Coord, Word32)])
-    _ <- forkIO $ startGUI canvas_ref update_ref
-    _ <- runServer 4242 update_ref
+    canvas <- newArray_ ((0,0), (canvasWidth, canvasHeight))
+    _ <- forkIO $ startGUI (canvas :: IOUArray Coord Word32)
+    _ <- runServer 4242 canvas
     putStrLn "Exiting"

@@ -9,12 +9,10 @@ where
 
 import Lib
 
-import Data.IORef
 import Graphics.Gloss
-import Data.Array.Unboxed (elems, (//))
-import Data.Serialize
-import Graphics.Gloss.Interface.IO.Simulate (simulateIO)
-import Data.Word (Word32)
+import Data.Serialize (encode)
+import Graphics.Gloss.Interface.IO.Simulate (simulateIO, ViewPort)
+import Data.Array.IO (getElems)
 
 
 -- Model consists of Reference to canvas and a cached image
@@ -32,16 +30,15 @@ window = InWindow "Pixelfold" (900, 900) (0,0)
 background :: Color
 background = white
 
-startGUI :: IORef Canvas -> IORef [(Coord, Word32)] -> IO ()
-startGUI canvas_ref update_ref = do
-    simulateIO window background 5 (canvas_ref, update_ref, circle 80) getImage updateImage
+startGUI :: Canvas -> IO ()
+startGUI canvas = do
+    simulateIO window background 5 (canvas, circle 80) getImage updateImage
     where
-        getImage :: (IORef Canvas, IORef [(Coord, Word32)], Picture) -> IO Picture
-        getImage (_, _, img) = return img
+        getImage :: (Canvas, Picture) -> IO Picture
+        getImage (_, img) = return img
 
-        updateImage _ _ (ca_ref, up_ref, _)= do
-            canvas <- readIORef ca_ref
-            updates <- readIORef up_ref
-            writeIORef up_ref []
-            let new_bytestr = encode . elems $ canvas // updates
-            return (ca_ref, up_ref, bitmapOfByteString canvasWidth canvasHeight (BitmapFormat TopToBottom PxRGBA) new_bytestr False)
+        updateImage :: ViewPort -> Float -> (Canvas, Picture) -> IO (Canvas, Picture)
+        updateImage _ _ (ca, _)= do
+            content <- getElems ca
+            let new_bytestr = encode content
+            return (ca, bitmapOfByteString canvasWidth canvasHeight (BitmapFormat TopToBottom PxRGBA) new_bytestr False)
