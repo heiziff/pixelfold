@@ -1,9 +1,10 @@
 import socket
+import sys
 from PIL import Image
 import numpy as np
 
 # read image
-img = Image.open("tux.png")
+img = Image.open(sys.argv[1])
 img = img.convert("RGBA")
 img_arr = np.array(img)
 

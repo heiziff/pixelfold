@@ -42,5 +42,6 @@ startGUI canvas_ref update_ref = do
         updateImage _ _ (ca_ref, up_ref, _)= do
             canvas <- readIORef ca_ref
             updates <- readIORef up_ref
+            writeIORef up_ref []
             let new_bytestr = encode . elems $ canvas // updates
             return (ca_ref, up_ref, bitmapOfByteString canvasWidth canvasHeight (BitmapFormat TopToBottom PxRGBA) new_bytestr False)
