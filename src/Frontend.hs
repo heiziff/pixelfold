@@ -1,19 +1,15 @@
 module Frontend
-    (
-        canvasWidth,
-        canvasHeight,
-        startGUI
-    )
-
+  ( canvasWidth,
+    canvasHeight,
+    startGUI,
+  )
 where
 
-import Lib
-
-import Graphics.Gloss
-import Data.Serialize (encode)
-import Graphics.Gloss.Interface.IO.Simulate (simulateIO, ViewPort)
 import Data.Array.IO (getElems)
-
+import Data.Serialize (encode)
+import Graphics.Gloss
+import Graphics.Gloss.Interface.IO.Simulate (ViewPort, simulateIO)
+import Lib
 
 -- Model consists of Reference to canvas and a cached image
 
@@ -23,22 +19,20 @@ canvasWidth = 800
 canvasHeight :: Int
 canvasHeight = 800
 
-
 window :: Display
-window = InWindow "Pixelfold" (900, 900) (0,0)
+window = InWindow "Pixelfold" (900, 900) (0, 0)
 
 background :: Color
 background = white
 
 startGUI :: Canvas -> IO ()
-startGUI canvas = do
-    simulateIO window background 5 (canvas, circle 80) getImage updateImage
-    where
-        getImage :: (Canvas, Picture) -> IO Picture
-        getImage (_, img) = return img
+startGUI canvas = simulateIO window background 5 (canvas, circle 80) getImage updateImage
+  where
+    getImage :: (Canvas, Picture) -> IO Picture
+    getImage (_, img) = return img
 
-        updateImage :: ViewPort -> Float -> (Canvas, Picture) -> IO (Canvas, Picture)
-        updateImage _ _ (ca, _)= do
-            content <- getElems ca
-            let new_bytestr = encode content
-            return (ca, bitmapOfByteString canvasWidth canvasHeight (BitmapFormat TopToBottom PxRGBA) new_bytestr False)
+    updateImage :: ViewPort -> Float -> (Canvas, Picture) -> IO (Canvas, Picture)
+    updateImage _ _ (ca, _) = do
+      content <- getElems ca
+      let new_bytestr = encode content
+      return (ca, bitmapOfByteString canvasWidth canvasHeight (BitmapFormat TopToBottom PxRGBA) new_bytestr False)
