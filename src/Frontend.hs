@@ -14,10 +14,10 @@ import Lib
 -- Model consists of Reference to canvas and a cached image
 
 canvasWidth :: Int
-canvasWidth = 800
+canvasWidth = 900
 
 canvasHeight :: Int
-canvasHeight = 800
+canvasHeight = 900
 
 window :: Display
 window = InWindow "Pixelfold" (900, 900) (0, 0)

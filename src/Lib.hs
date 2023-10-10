@@ -18,28 +18,20 @@ data Command = Draw Coord Word32 | Help
 parseCommand :: String -> Maybe Command
 parseCommand [] = Nothing
 parseCommand s
-  | cstr == "Help" = Just Help
-  | cstr == "Draw" = do
+  | head w == "Help" = Just Help
+  | head w == "Draw" = do
       pos <- readMaybe (w !! 1)
       Draw pos <$> readMaybe (w !! 2)
   where
     w = words s
-    cstr = head w
 parseCommand _ = Nothing
 
 runCommand :: Command -> Canvas -> IO ()
-runCommand Help _ = do
-  putStrLn "TODO"
-  return ()
-runCommand (Draw idx rgba) canvas = do
-  writeArray canvas idx rgba
-  return ()
+runCommand Help _ = putStrLn "TODO"
+runCommand (Draw idx rgba) canvas = writeArray canvas idx rgba
 
 handleUpdate :: Canvas -> String -> IO ()
-handleUpdate update_ref s = do
-  let mC = parseCommand s
-  case mC of
-    Nothing -> do
-      putStrLn "Invalid Command!"
-      return ()
+handleUpdate update_ref s =
+  case parseCommand s of
+    Nothing -> putStrLn "Invalid Command!"
     Just cmd -> runCommand cmd update_ref
