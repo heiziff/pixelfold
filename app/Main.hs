@@ -10,7 +10,6 @@ import Net (runServer)
 
 main :: IO ()
 main = do
-  -- Ix type uses inclusive bounds *sigh*
   canvas <- newArray ((0, 0), (canvasWidth - 1, canvasHeight - 1)) 0
   _ <- forkIO $ startGUI (canvas :: IOUArray Coord Word32)
   _ <- runServer 4242 canvas

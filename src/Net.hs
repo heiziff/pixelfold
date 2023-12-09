@@ -22,7 +22,6 @@ socketHandler sock canvas = do
   h <- socketToHandle conn ReadMode
   _ <- forkIO $ connectionHandler h
 
-  putStrLn "Recursing"
   socketHandler sock canvas
   where
     connectionHandler handle = do

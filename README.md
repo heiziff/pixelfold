@@ -20,7 +20,7 @@ pixelflut listens for TCP messages on Port 4242.
 
 
 The server defines Commands:
-* Draw: draws pixel at position (pos_x, pos_y) with value rgba
-Expects messages of form: "Draw (<pos_x>,<pos_y>) <rgba>\n"
-* Help: Displays help text (TODO)
+* __Draw__: draws pixel at position (pos_x, pos_y) with value rgba
+Expects messages of form: "Draw (<pos_x>,<pos_y>) 0xrgba\n"
+* __Help__: Displays help text (TODO)
 
