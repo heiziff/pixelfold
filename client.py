@@ -8,9 +8,8 @@ img = Image.open(sys.argv[1])
 img = img.convert("RGBA")
 img_arr = np.array(img)
 
-# connect to server
 host = socket.gethostname()
-port = 4242                   # The same port as used by the server
+port = 4242
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((host, port))
 
@@ -21,7 +20,6 @@ def send_pixel(x,y):
     b = img_arr[x][y][2]
 
     message = b'Draw (%d,%d) 0x%02x%02x%02x%02x\n' % (x,y,r,g,b,255)
-    #print(f"Sending: {message}")
     s.send(message)
 
 if __name__ == '__main__':
