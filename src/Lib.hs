@@ -6,6 +6,7 @@ module Lib
 where
 
 import Data.Array.IO
+import Data.Tuple (swap)
 import Data.Word (Word32)
 import Text.Read (readMaybe)
 
@@ -21,7 +22,8 @@ parseCommand s
   | head w == "Help" = Just Help
   | head w == "Draw" = do
       pos <- readMaybe (w !! 1)
-      Draw pos <$> readMaybe (w !! 2)
+      let newPos = swap pos
+      Draw newPos <$> readMaybe (w !! 2)
   where
     w = words s
 parseCommand _ = Nothing

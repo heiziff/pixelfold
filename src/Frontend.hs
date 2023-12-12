@@ -14,19 +14,19 @@ import Lib
 -- Model consists of Reference to canvas and a cached image
 
 canvasWidth :: Int
-canvasWidth = 900
+canvasWidth = 1900
 
 canvasHeight :: Int
-canvasHeight = 900
+canvasHeight = 1000
 
 window :: Display
-window = InWindow "Pixelfold" (900, 900) (0, 0)
+window = InWindow "Pixelfold" (canvasWidth, canvasHeight) (0, 0)
 
 background :: Color
 background = white
 
 startGUI :: Canvas -> IO ()
-startGUI canvas = simulateIO window background 5 (canvas, circle 80) getImage updateImage
+startGUI canvas = simulateIO window background 2 (canvas, circle 80) getImage updateImage
   where
     getImage :: (Canvas, Picture) -> IO Picture
     getImage (_, img) = return img

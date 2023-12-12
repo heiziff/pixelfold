@@ -10,7 +10,7 @@ import Net (runServer)
 
 main :: IO ()
 main = do
-  canvas <- newArray ((0, 0), (canvasWidth - 1, canvasHeight - 1)) 0
+  canvas <- newArray ((0, 0), (canvasHeight - 1, canvasWidth - 1)) 0
   _ <- forkIO $ startGUI (canvas :: IOUArray Coord Word32)
   _ <- runServer 4242 canvas
   putStrLn "Exiting"
