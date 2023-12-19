@@ -1,7 +1,5 @@
 module Frontend
-  ( canvasWidth,
-    canvasHeight,
-    startGUI,
+  ( startGUI,
   )
 where
 
@@ -12,12 +10,6 @@ import Graphics.Gloss.Interface.IO.Simulate (ViewPort, simulateIO)
 import Lib
 
 -- Model consists of Reference to canvas and a cached image
-
-canvasWidth :: Int
-canvasWidth = 1900
-
-canvasHeight :: Int
-canvasHeight = 1000
 
 window :: Display
 window = InWindow "Pixelfold" (canvasWidth, canvasHeight) (0, 0)

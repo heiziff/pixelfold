@@ -4,8 +4,8 @@ import Control.Concurrent (forkIO)
 import Data.Array.IO (IOUArray)
 import Data.Array.MArray
 import Data.Word (Word32)
-import Frontend (canvasHeight, canvasWidth, startGUI)
-import Lib (Coord)
+import Frontend (startGUI)
+import Lib (Coord, canvasHeight, canvasWidth)
 import Net (runServer)
 
 main :: IO ()

@@ -1,13 +1,17 @@
 module Lib
-  ( handleUpdate,
+  ( handleCommand,
     Canvas,
     Coord,
+    canvasHeight,
+    canvasWidth,
   )
 where
 
 import Data.Array.IO
 import Data.Tuple (swap)
 import Data.Word (Word32)
+import GHC.IO.Handle (Handle, hPutStr)
+import Text.Printf (printf)
 import Text.Read (readMaybe)
 
 type Coord = (Int, Int)
@@ -16,24 +20,39 @@ type Canvas = IOUArray Coord Word32
 
 data Command = Draw Coord Word32 | Help
 
+helpStr :: String
+helpStr = "To draw a Pixel, send a String of the Format: 'Draw (pos_x,pos_y) 0xRRGGBBAA\\n'\n"
+
+canvasWidth :: Int
+canvasWidth = 1900
+
+canvasHeight :: Int
+canvasHeight = 1000
+
 parseCommand :: String -> Maybe Command
 parseCommand [] = Nothing
 parseCommand s
   | head w == "Help" = Just Help
   | head w == "Draw" = do
-      pos <- readMaybe (w !! 1)
-      let newPos = swap pos
-      Draw newPos <$> readMaybe (w !! 2)
+      pos <- getValidPos (w !! 1)
+      Draw pos <$> readMaybe (w !! 2)
   where
     w = words s
 parseCommand _ = Nothing
 
-runCommand :: Command -> Canvas -> IO ()
-runCommand Help _ = putStrLn "TODO"
-runCommand (Draw idx rgba) canvas = writeArray canvas idx rgba
+getValidPos :: String -> Maybe Coord
+getValidPos s = do
+  coord <- (readMaybe s :: Maybe Coord)
+  swap <$> isInBounds coord
+  where
+    isInBounds c@(x, y) = if x < canvasWidth && x >= 0 && y < canvasHeight && y >= 0 then Just c else Nothing
 
-handleUpdate :: Canvas -> String -> IO ()
-handleUpdate update_ref s =
+runCommand :: Command -> Canvas -> Handle -> IO ()
+runCommand Help _ handle = hPutStr handle helpStr
+runCommand (Draw idx rgba) canvas _ = writeArray canvas idx rgba
+
+handleCommand :: Canvas -> Handle -> String -> IO ()
+handleCommand update_ref handle s =
   case parseCommand s of
-    Nothing -> putStrLn "Invalid Command!"
-    Just cmd -> runCommand cmd update_ref
+    Nothing -> putStrLn $ printf "Invalid Command! '%s'" s
+    Just cmd -> runCommand cmd update_ref handle
