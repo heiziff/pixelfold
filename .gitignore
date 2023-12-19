@@ -2,4 +2,5 @@
 *~
 *.jpg
 *.png
+*.bmp
 pixelflut-client.c
