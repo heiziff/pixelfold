@@ -6,7 +6,7 @@ Requirements
 
 Installation
 ------------
-    git clone https://github.com/AlbinoBoi/pixelfold.git
+    git clone https://github.com/heiziff/pixelfold.git
     cd pixelfold
     stack build
 
