@@ -27,6 +27,7 @@ dependencies:
 - cereal
 - network
 - gloss
+- bytestring
 
 
 ghc-options:
