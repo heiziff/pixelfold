@@ -3,11 +3,14 @@ module Frontend
   )
 where
 
+import Control.Monad (unless)
 import Data.Array.IO (getElems)
 import Data.Serialize (encode)
 import Graphics.Gloss
 import Graphics.Gloss.Interface.IO.Simulate (ViewPort, simulateIO)
 import Lib
+import Linear (V4 (..))
+import SDL
 
 -- Model consists of Reference to canvas and a cached image
 

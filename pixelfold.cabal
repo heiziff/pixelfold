@@ -39,15 +39,16 @@ library
     , bytestring
     , cereal
     , gloss
-    , hip
+    , linear
     , mtl
     , network
+    , sdl2
+    , vector
   default-language: Haskell2010
 
 executable pixelfold-exe
   main-is: Main.hs
   other-modules:
-      Client
       Paths_pixelfold
   hs-source-dirs:
       app
@@ -58,10 +59,12 @@ executable pixelfold-exe
     , bytestring
     , cereal
     , gloss
-    , hip
+    , linear
     , mtl
     , network
     , pixelfold
+    , sdl2
+    , vector
   default-language: Haskell2010
 
 test-suite pixelfold-test
@@ -78,8 +81,10 @@ test-suite pixelfold-test
     , bytestring
     , cereal
     , gloss
-    , hip
+    , linear
     , mtl
     , network
     , pixelfold
+    , sdl2
+    , vector
   default-language: Haskell2010
