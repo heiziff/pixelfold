@@ -4,12 +4,14 @@ module Lib
     Coord,
     canvasHeight,
     canvasWidth,
+    word32toWord8,
   )
 where
 
 import Data.Array.IO
+import Data.Bits (Bits ((.&.)))
 import Data.Tuple (swap)
-import Data.Word (Word32)
+import Data.Word (Word32, Word8)
 import GHC.IO.Handle (Handle, hPutStr)
 import Text.Printf (printf)
 import Text.Read (readMaybe)
@@ -56,3 +58,6 @@ handleCommand update_ref handle s =
   case parseCommand s of
     Nothing -> putStrLn $ printf "Invalid Command! '%s'" s
     Just cmd -> runCommand cmd update_ref handle
+
+word32toWord8 :: Word32 -> (Word8, Word8, Word8, Word8)
+word32toWord8 rgba = (fromIntegral $ rgba .&. 0xFF000000, fromIntegral $ rgba .&. 0x00FF0000, fromIntegral $ rgba .&. 0x0000FF00, fromIntegral $ rgba .&. 0x000000FF)
