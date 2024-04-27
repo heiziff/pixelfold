@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module Frontend
   ( startGUI,
   )
@@ -9,8 +11,13 @@ import Data.Vector.Storable.Mutable (unsafeCast)
 import Lib (Canvas, canvasHeight, canvasWidth)
 import SDL
 
-startGUI :: Window -> Canvas -> IO ()
-startGUI window canvas = do
+startGUI :: Canvas -> IO ()
+startGUI canvas = do
+  initializeAll
+  window <-
+    createWindow
+      "pixelfold"
+      (WindowConfig True False False Windowed NoGraphicsContext Wherever True (V2 (fromIntegral canvasWidth + 20) (fromIntegral canvasHeight + 20)) True)
   renderer <- createRenderer window (-1) (RendererConfig AcceleratedVSyncRenderer True)
   appLoop window canvas renderer
   destroyWindow window
