@@ -21,14 +21,9 @@ description:         Please see the README on GitHub at <https://github.com/heiz
 
 dependencies:
 - base >= 4.7 && < 5
-- hip
-- mtl
-- array
-- cereal
+- vector
 - network
-- gloss
-- bytestring
-
+- sdl2
 
 ghc-options:
 - -Wall

@@ -1,14 +1,13 @@
 module Lib
   ( handleCommand,
     Canvas,
-    Coord,
     canvasHeight,
     canvasWidth,
   )
 where
 
-import Data.Array.IO
 import Data.Tuple (swap)
+import Data.Vector.Storable.Mutable (IOVector, write)
 import Data.Word (Word32)
 import GHC.IO.Handle (Handle, hPutStr)
 import Text.Printf (printf)
@@ -16,7 +15,7 @@ import Text.Read (readMaybe)
 
 type Coord = (Int, Int)
 
-type Canvas = IOUArray Coord Word32
+type Canvas = IOVector Word32
 
 data Command = Draw Coord Word32 | Help
 
@@ -27,7 +26,7 @@ canvasWidth :: Int
 canvasWidth = 1900
 
 canvasHeight :: Int
-canvasHeight = 1000
+canvasHeight = 1300
 
 parseCommand :: String -> Maybe Command
 parseCommand [] = Nothing
@@ -49,10 +48,11 @@ getValidPos s = do
 
 runCommand :: Command -> Canvas -> Handle -> IO ()
 runCommand Help _ handle = hPutStr handle helpStr
-runCommand (Draw idx rgba) canvas _ = writeArray canvas idx rgba
+runCommand (Draw (x, y) rgba) canvas _ = do
+  write canvas (x + y * canvasWidth) rgba
 
 handleCommand :: Canvas -> Handle -> String -> IO ()
-handleCommand update_ref handle s =
+handleCommand canvas handle s =
   case parseCommand s of
     Nothing -> putStrLn $ printf "Invalid Command! '%s'" s
-    Just cmd -> runCommand cmd update_ref handle
+    Just cmd -> runCommand cmd canvas handle

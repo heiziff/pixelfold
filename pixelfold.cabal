@@ -34,34 +34,25 @@ library
       src
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
-      array
-    , base >=4.7 && <5
-    , bytestring
-    , cereal
-    , gloss
-    , hip
-    , mtl
+      base >=4.7 && <5
     , network
+    , sdl2
+    , vector
   default-language: Haskell2010
 
 executable pixelfold-exe
   main-is: Main.hs
   other-modules:
-      Client
       Paths_pixelfold
   hs-source-dirs:
       app
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      array
-    , base >=4.7 && <5
-    , bytestring
-    , cereal
-    , gloss
-    , hip
-    , mtl
+      base >=4.7 && <5
     , network
     , pixelfold
+    , sdl2
+    , vector
   default-language: Haskell2010
 
 test-suite pixelfold-test
@@ -73,13 +64,9 @@ test-suite pixelfold-test
       test
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      array
-    , base >=4.7 && <5
-    , bytestring
-    , cereal
-    , gloss
-    , hip
-    , mtl
+      base >=4.7 && <5
     , network
     , pixelfold
+    , sdl2
+    , vector
   default-language: Haskell2010
