@@ -5,28 +5,25 @@ where
 
 import Control.Monad (unless)
 import Data.Functor (void)
-import Data.Vector.Storable.Mutable (IOVector, unsafeCast)
-import Data.Word (Word32)
-import Lib
+import Data.Vector.Storable.Mutable (unsafeCast)
+import Lib (Canvas, canvasHeight, canvasWidth)
 import SDL
 
--- Model consists of Reference to canvas and a cached image
-
-startGUI :: Window -> IOVector Word32 -> IO ()
+startGUI :: Window -> Canvas -> IO ()
 startGUI window canvas = do
   appLoop window canvas
   destroyWindow window
 
-appLoop :: Window -> IOVector Word32 -> IO ()
+appLoop :: Window -> Canvas -> IO ()
 appLoop window canvas = do
   events <- pollEvents
-  let eventIsQPress event =
+  let isEscapePressed event =
         case eventPayload event of
           KeyboardEvent keyboardEvent ->
             keyboardEventKeyMotion keyboardEvent == Pressed
               && keysymKeycode (keyboardEventKeysym keyboardEvent) == KeycodeEscape
           _ -> False
-      qPressed = any eventIsQPress events
+      qPressed = any isEscapePressed events
   winSurface <- getWindowSurface window
   newSurface <- createRGBSurfaceFrom (unsafeCast canvas) (V2 (fromIntegral canvasWidth) (fromIntegral canvasHeight)) (fromIntegral canvasWidth * 4) RGBA8888
   void $ surfaceBlit newSurface Nothing winSurface Nothing
