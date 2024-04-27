@@ -14,7 +14,10 @@ import SDL
 main :: IO ()
 main = do
   initializeAll
-  window <- createWindow "pixelfold" (WindowConfig True False False Windowed NoGraphicsContext Wherever True (V2 (fromIntegral canvasWidth + 20) (fromIntegral canvasHeight + 20)) True)
+  window <-
+    createWindow
+      "pixelfold"
+      (WindowConfig True False False Windowed NoGraphicsContext Wherever True (V2 (fromIntegral canvasWidth + 20) (fromIntegral canvasHeight + 20)) True)
   canvas :: Canvas <- V.replicate (canvasWidth * canvasHeight) 0xFFFFFFFF
   void . forkIO $ runServer 4242 canvas
   void $ startGUI window canvas

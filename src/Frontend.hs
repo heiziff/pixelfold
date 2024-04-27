@@ -3,19 +3,20 @@ module Frontend
   )
 where
 
+import Control.Concurrent (threadDelay)
 import Control.Monad (unless)
-import Data.Functor (void)
 import Data.Vector.Storable.Mutable (unsafeCast)
 import Lib (Canvas, canvasHeight, canvasWidth)
 import SDL
 
 startGUI :: Window -> Canvas -> IO ()
 startGUI window canvas = do
-  appLoop window canvas
+  renderer <- createRenderer window (-1) (RendererConfig AcceleratedVSyncRenderer True)
+  appLoop window canvas renderer
   destroyWindow window
 
-appLoop :: Window -> Canvas -> IO ()
-appLoop window canvas = do
+appLoop :: Window -> Canvas -> Renderer -> IO ()
+appLoop window canvas renderer = do
   events <- pollEvents
   let isEscapePressed event =
         case eventPayload event of
@@ -24,8 +25,10 @@ appLoop window canvas = do
               && keysymKeycode (keyboardEventKeysym keyboardEvent) == KeycodeEscape
           _ -> False
       qPressed = any isEscapePressed events
-  winSurface <- getWindowSurface window
   newSurface <- createRGBSurfaceFrom (unsafeCast canvas) (V2 (fromIntegral canvasWidth) (fromIntegral canvasHeight)) (fromIntegral canvasWidth * 4) RGBA8888
-  void $ surfaceBlit newSurface Nothing winSurface Nothing
-  updateWindowSurface window
-  unless qPressed (appLoop window canvas)
+  texture <- createTextureFromSurface renderer newSurface
+  copy renderer texture Nothing Nothing
+  present renderer
+  destroyTexture texture
+  threadDelay 100000 -- short delay to prevent CPU from exploding
+  unless qPressed (appLoop window canvas renderer)
