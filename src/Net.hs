@@ -9,10 +9,10 @@ import Lib (Canvas, handleCommand)
 import Network.Socket
 import Text.Printf (printf)
 
-runServer :: Integer -> Canvas -> IO ()
+runServer :: Int -> Canvas -> IO ()
 runServer port canvas = withSocketsDo $ do
   sock <- socket AF_INET Stream defaultProtocol
-  bind sock (SockAddrInet (fromInteger port) 0)
+  bind sock (SockAddrInet (fromIntegral port) 0)
   listen sock 3
   putStrLn $ printf "Listening on Port %d" port
   finally (handleSocket sock canvas) (close sock)

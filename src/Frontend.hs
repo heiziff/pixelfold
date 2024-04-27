@@ -37,5 +37,5 @@ appLoop window canvas renderer = do
   copy renderer texture Nothing Nothing
   present renderer
   destroyTexture texture
-  threadDelay 100000 -- short delay to prevent CPU from exploding
+  threadDelay 10000 -- short delay to prevent CPU from exploding
   unless qPressed (appLoop window canvas renderer)
