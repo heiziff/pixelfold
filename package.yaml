@@ -24,6 +24,8 @@ dependencies:
 - vector
 - network
 - sdl2
+- bytestring
+- attoparsec
 
 ghc-options:
 - -Wall
