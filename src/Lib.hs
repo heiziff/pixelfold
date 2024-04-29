@@ -10,14 +10,14 @@ where
 
 import Control.Applicative (Alternative ((<|>)))
 import Control.Monad (void)
-import Data.Attoparsec.ByteString.Char8 (Parser, char, decimal, hexadecimal, parseOnly, skipSpace, string)
-import Data.ByteString.Char8 (pack)
-import Data.Tuple (swap)
+import Data.Attoparsec.ByteString.Char8 (Parser, char, decimal, hexadecimal, skipSpace, string)
+import Data.Attoparsec.ByteString.Lazy (parseOnly)
+import Data.ByteString.Lazy.Char8 (ByteString)
+import Data.Text.Lazy.Encoding (decodeUtf8)
 import Data.Vector.Storable.Mutable (IOVector, write)
 import Data.Word (Word32)
 import GHC.IO.Handle (Handle, hPutStr)
 import Text.Printf (printf)
-import Text.Read (readMaybe)
 
 type Coord = (Int, Int)
 
@@ -30,21 +30,20 @@ helpStr :: String
 helpStr = "To draw a Pixel, send a String of the Format: 'Draw (pos_x,pos_y) 0xRRGGBBAA\\n'\n"
 
 canvasWidth :: Int
-canvasWidth = 1900
+canvasWidth = 1600
 
 canvasHeight :: Int
-canvasHeight = 1300
+canvasHeight = 1000
 
-parseCommand :: String -> Maybe Command
-parseCommand [] = Nothing
-parseCommand s
-  | head w == "Help" = Just Help
-  | head w == "Draw" = do
-      pos <- getValidPos (w !! 1)
-      Draw pos <$> readMaybe (w !! 2)
-  where
-    w = words s
-parseCommand _ = Nothing
+runCommand :: Command -> Canvas -> Handle -> IO ()
+runCommand Help _ handle = hPutStr handle helpStr
+runCommand (Draw (x, y) rgba) canvas _ = write canvas (y + x * canvasWidth) rgba
+
+handleCommand :: Canvas -> Handle -> ByteString -> IO ()
+handleCommand canvas handle rawCommand =
+  case parseOnly commandParser rawCommand of
+    Left err -> putStrLn $ printf "Invalid command (%s): %s" (decodeUtf8 rawCommand) err
+    Right cmd -> runCommand cmd canvas handle
 
 commandParser :: Parser Command
 commandParser = helpParser <|> drawParser
@@ -72,29 +71,11 @@ coordParser = do
   y <- decimal
   skipSpace
   void $ char ')'
-  if isInBounds (x, y) then return (y, x) else fail "Coordinates are out of bounds"
+  if isInBounds (x, y) then return (x, y) else fail "Coordinates are out of bounds"
   where
-    isInBounds (x, y) = x < canvasWidth && x >= 0 && y < canvasHeight && y >= 0
+    isInBounds (x, y) = y < canvasWidth && y >= 0 && x < canvasHeight && x >= 0
 
 hexParser :: Parser Word32
 hexParser = do
   void $ string "0x"
   hexadecimal
-
-getValidPos :: String -> Maybe Coord
-getValidPos s = do
-  coord <- (readMaybe s :: Maybe Coord)
-  swap <$> isInBounds coord
-  where
-    isInBounds c@(x, y) = if x < canvasWidth && x >= 0 && y < canvasHeight && y >= 0 then Just c else Nothing
-
-runCommand :: Command -> Canvas -> Handle -> IO ()
-runCommand Help _ handle = hPutStr handle helpStr
-runCommand (Draw (x, y) rgba) canvas _ = do
-  write canvas (x + y * canvasWidth) rgba
-
-handleCommand :: Canvas -> Handle -> String -> IO ()
-handleCommand canvas handle s =
-  case parseOnly commandParser $ pack s of
-    Left err -> putStrLn $ printf "Invalid command (%s): %s" s err
-    Right cmd -> runCommand cmd canvas handle

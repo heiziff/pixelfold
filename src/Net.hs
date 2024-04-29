@@ -3,7 +3,7 @@ module Net (runServer) where
 import Control.Concurrent (forkFinally)
 import Control.Exception (finally)
 import Control.Monad (void)
-import GHC.IO.Handle (hGetContents)
+import qualified Data.ByteString.Lazy.Char8 as BS
 import GHC.IO.IOMode (IOMode (ReadWriteMode))
 import Lib (Canvas, handleCommand)
 import Network.Socket
@@ -27,5 +27,5 @@ handleSocket sock canvas = do
   handleSocket sock canvas
   where
     handleConnection handle = do
-      content <- lines <$> hGetContents handle
+      content <- BS.lines <$> BS.hGetContents handle
       mapM_ (handleCommand canvas handle) content

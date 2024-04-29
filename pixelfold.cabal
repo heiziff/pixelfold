@@ -39,6 +39,7 @@ library
     , bytestring
     , network
     , sdl2
+    , text
     , vector
   default-language: Haskell2010
 
@@ -56,6 +57,7 @@ executable pixelfold-exe
     , network
     , pixelfold
     , sdl2
+    , text
     , vector
   default-language: Haskell2010
 
@@ -74,5 +76,6 @@ test-suite pixelfold-test
     , network
     , pixelfold
     , sdl2
+    , text
     , vector
   default-language: Haskell2010

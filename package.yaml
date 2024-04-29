@@ -25,6 +25,7 @@ dependencies:
 - network
 - sdl2
 - bytestring
+- text
 - attoparsec
 
 ghc-options:
