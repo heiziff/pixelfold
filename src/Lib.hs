@@ -1,11 +1,11 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Lib
-  ( handleCommand,
+module Lib (
+    handleCommand,
     Canvas,
     canvasHeight,
     canvasWidth,
-  )
+)
 where
 
 import Control.Applicative (Alternative ((<|>)))
@@ -24,26 +24,26 @@ type Coord = (Int, Int)
 type Canvas = IOVector Word32
 
 data Command = Draw Coord Word32 | Help
-  deriving (Show, Eq)
+    deriving (Show, Eq)
 
 helpStr :: String
 helpStr = "To draw a Pixel, send a String of the Format: 'Draw (pos_x,pos_y) 0xRRGGBBAA\\n'\n"
 
 canvasWidth :: Int
-canvasWidth = 1600
+canvasWidth = 1800
 
 canvasHeight :: Int
 canvasHeight = 1000
 
 runCommand :: Command -> Canvas -> Handle -> IO ()
 runCommand Help _ handle = hPutStr handle helpStr
-runCommand (Draw (x, y) rgba) canvas _ = write canvas (y + x * canvasWidth) rgba
+runCommand (Draw (x, y) rgba) canvas _ = write canvas (x + y * canvasWidth) rgba
 
 handleCommand :: Canvas -> Handle -> ByteString -> IO ()
 handleCommand canvas handle rawCommand =
-  case parseOnly commandParser rawCommand of
-    Left err -> putStrLn $ printf "Invalid command (%s): %s" (decodeUtf8 rawCommand) err
-    Right cmd -> runCommand cmd canvas handle
+    case parseOnly commandParser rawCommand of
+        Left err -> putStrLn $ printf "Invalid command (%s): %s" (decodeUtf8 rawCommand) err
+        Right cmd -> runCommand cmd canvas handle
 
 commandParser :: Parser Command
 commandParser = helpParser <|> drawParser
@@ -53,29 +53,29 @@ helpParser = string "Help" >> pure Help
 
 drawParser :: Parser Command
 drawParser = do
-  void $ string "Draw"
-  skipSpace
-  coord <- coordParser
-  skipSpace
-  color <- hexParser
-  return $ Draw coord color
+    void $ string "Draw"
+    skipSpace
+    coord <- coordParser
+    skipSpace
+    color <- hexParser
+    return $ Draw coord color
 
 coordParser :: Parser Coord
 coordParser = do
-  void $ char '('
-  skipSpace
-  x <- decimal
-  skipSpace
-  void $ char ','
-  skipSpace
-  y <- decimal
-  skipSpace
-  void $ char ')'
-  if isInBounds (x, y) then return (x, y) else fail "Coordinates are out of bounds"
+    void $ char '('
+    skipSpace
+    x <- decimal
+    skipSpace
+    void $ char ','
+    skipSpace
+    y <- decimal
+    skipSpace
+    void $ char ')'
+    if isInBounds (x, y) then return (x, y) else fail $ printf "Coordinates are out of bounds for (%d,%d)" canvasWidth canvasHeight
   where
-    isInBounds (x, y) = y < canvasWidth && y >= 0 && x < canvasHeight && x >= 0
+    isInBounds (x, y) = y < canvasHeight && y >= 0 && x < canvasWidth && x >= 0
 
 hexParser :: Parser Word32
 hexParser = do
-  void $ string "0x"
-  hexadecimal
+    void $ string "0x"
+    hexadecimal
