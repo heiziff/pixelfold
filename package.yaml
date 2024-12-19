@@ -3,8 +3,8 @@ version:             0.1.0.0
 github:              "heiziff/pixelfold"
 license:             BSD3
 author:              "Felix Zimmer"
-maintainer:          "felix.zimmer@student.kit.edu"
-copyright:           "2023 Felix Zimmer"
+maintainer:          "fzwei@tuta.io"
+copyright:           "2024 Felix Zimmer"
 
 extra-source-files:
 - README.md

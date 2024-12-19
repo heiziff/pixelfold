@@ -10,8 +10,8 @@ description:    Please see the README on GitHub at <https://github.com/heiziff/p
 homepage:       https://github.com/heiziff/pixelfold#readme
 bug-reports:    https://github.com/heiziff/pixelfold/issues
 author:         Felix Zimmer
-maintainer:     felix.zimmer@student.kit.edu
-copyright:      2023 Felix Zimmer
+maintainer:     fzwei@tuta.io
+copyright:      2024 Felix Zimmer
 license:        BSD3
 license-file:   LICENSE
 build-type:     Simple
