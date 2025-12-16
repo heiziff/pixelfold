@@ -32,7 +32,7 @@ appLoop window canvas renderer = do
               && keysymKeycode (keyboardEventKeysym keyboardEvent) == KeycodeEscape
           _ -> False
       qPressed = any isEscapePressed events
-  newSurface <- createRGBSurfaceFrom (unsafeCast canvas) (V2 (fromIntegral canvasWidth) (fromIntegral canvasHeight)) (fromIntegral canvasWidth * 4) RGBA8888
+  newSurface <- createRGBSurfaceFrom (unsafeCast canvas) (V2 (fromIntegral canvasWidth) (fromIntegral canvasHeight)) (fromIntegral canvasWidth * 4) ARGB8888
   texture <- createTextureFromSurface renderer newSurface
   copy renderer texture Nothing Nothing
   present renderer
