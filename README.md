@@ -25,10 +25,15 @@
 
 The server then listens for TCP messages on Port `<portnumber>` or Port 4242, if none was specified.
 
-
 The server accepts the following Commands:
-- __Draw__: colors the pixel at position (pos_x, pos_y) with the 32-bit color value 0xRRGGBBAA
-
-    - Expects messages with the following format: "Draw (pos_x,pos_y) 0xRRGGBBAA\n"
+- __Draw__: colors the pixel at position (pos_x, pos_y) with the 32-bit color value 0xAARRGGBB
+    - Format: "PX \<pos_x\> \<pos_y\> AARRGGBB\n"
 
 - __Help__: Sends back the help text
+    - Format: "HELP\n"
+
+- __Size__: Returns the size of the Canvas
+    - Format: "SIZE\n"
+
+- __GetPixel__: Returns the current color at Position (pox_x, pox_y)
+    - Format: "PX \<pos_x\> \<pos_y\> \n"
